@@ -12,7 +12,7 @@ from util import delete_file
 
 
 LANGUAGE = os.getenv("LANGUAGE", "hi-IN")
-API_KEY = "AIzaSyAa1HbCTRBpgnH_l_6b6sl26AccQikKc8w" # Replace with your API key
+API_KEY = "" # Replace with your API key
 PROJECT_ID = "tough-buffalo" # Replace with your project ID.
 
 TTS_PROVIDER = os.getenv("TTS_PROVIDER", "googleTTS")

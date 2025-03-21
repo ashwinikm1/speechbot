@@ -6,7 +6,7 @@ import google.generativeai as genai
 import asyncio
 
 # Configure your Gemini API key
-genai.configure(api_key="AIzaSyAa1HbCTRBpgnH_l_6b6sl26AccQikKc8w")
+genai.configure(api_key="")
 
 # Model to use (Gemini Pro in this case)
 AI_COMPLETION_MODEL = "gemini-2.0-flash-lite-001"
