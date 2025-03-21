@@ -6,12 +6,12 @@ import google.generativeai as genai
 import asyncio
 
 # Configure your Gemini API key
-genai.configure(api_key="")
+genai.configure(api_key="AIzaSyAa1HbCTRBpgnH_l_6b6sl26AccQikKc8w")
 
 # Model to use (Gemini Pro in this case)
-AI_COMPLETION_MODEL = "gemini-2.0-flash-lite-001"
-LANGUAGE = os.getenv("LANGUAGE", "hi")
-INITIAL_PROMPT = f"You are a versatile assistant. Respond to user queries in {LANGUAGE} or hindi , handling Hinglish, interruptions, and ambiguous requests. Provide concise answers (3-4 sentences), maintain context, and adapt to changing user needs.  "
+AI_COMPLETION_MODEL = "gemini-2.0-flash"
+LANGUAGE = os.getenv("LANGUAGE", "hi-IN")
+INITIAL_PROMPT = f"You are a versatile assistant. Respond to user queries in {LANGUAGE} or hinglish , handling Hinglish, interruptions, and ambiguous requests. Provide concise answers (3-4 sentences), maintain context, and adapt to changing user needs.  "
 
 async def get_completion(user_prompt, conversation_thus_far):
     if _is_empty(user_prompt):
@@ -22,14 +22,15 @@ async def get_completion(user_prompt, conversation_thus_far):
     # Setup the model
     model = genai.GenerativeModel(AI_COMPLETION_MODEL)
 
-    # Construct the prompt with the initial prompt and user prompt.
-    prompt = f"{INITIAL_PROMPT}\n\n{user_prompt}"
+    # Construct the prompt with the initial prompt, conversation history, and user prompt.
+    prompt = f"{INITIAL_PROMPT}\n\n{conversation_thus_far}\nUser: {user_prompt}\nAssistant:"
 
     logging.debug("calling %s", AI_COMPLETION_MODEL)
 
     # Generate the response
     try:
         response = model.generate_content(prompt)
+
         completion = response.text
     except Exception as e:
         logging.error(f"Error generating content: {e}")
@@ -45,14 +46,18 @@ def _is_empty(user_prompt: str):
 
 #Example of how to use it.
 async def main():
-    user_input = "What is the capital of France?"
-    conversation = "" #Not used in this example, but can be implemented.
-
-    try:
-        result = await get_completion(user_input, conversation)
-        print(result)
-    except ValueError as e:
-        print(f"Error: {e}")
+    conversation = "" # Initialize conversation history
+    while True: # loop for multiple turns
+        user_input = input("You: ")
+        if user_input.lower() == "exit":
+            break
+        try:
+            result = await get_completion(user_input, conversation)
+            print("Assistant:", result)
+            # Update the conversation history
+            conversation += f"User: {user_input}\nAssistant: {result}\n"
+        except ValueError as e:
+            print(f"Error: {e}")
 
 if __name__ == "__main__":
     asyncio.run(main())

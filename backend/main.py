@@ -24,6 +24,16 @@ async def infer(audio: UploadFile, background_tasks: BackgroundTasks,
 
     user_prompt_text = await transcribe(audio)
     ai_response_text = await get_completion(user_prompt_text, conversation)
+        # Update conversation history as a string
+        # Update conversation history as a string
+    new_exchange = f" User: {user_prompt_text}\nAI: {ai_response_text}\n"
+
+    conversation += new_exchange
+
+    # Keep only the last 4 exchanges (approximation)
+    lines = conversation.splitlines()
+    if len(lines) > 4:  # 4 user/ai pairs, so 8 lines
+        conversation = "\n".join(lines[-4:])
     ai_response_audio_filepath = await to_speech(ai_response_text, background_tasks)
 
     logging.info('total processing time: %s %s', time.time() - start_time, 'seconds')
